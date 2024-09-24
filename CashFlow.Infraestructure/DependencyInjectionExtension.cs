@@ -11,6 +11,8 @@ using CashFlow.Infraestructure.DataAcess.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using CashFlow.Domain.Security.Token;
+using CashFlow.Infraestructure.Security.Tokens;
 
 namespace CashFlow.Infraestructure;
 
@@ -20,16 +22,21 @@ public static class DependencyInjectionExtension
     {
         AddRepositories(services);
         AddDbContext(services, configuration);
-        AddSecurityInfrastructure(services);
+        AddPassword(services);
         AddDbContext(services, configuration);
-    }
-    
-    public static void AddSecurityInfrastructure(IServiceCollection services)
+        AddToken(services, configuration);  
+    }   
+    public static void AddPassword(IServiceCollection services)
     {
-      services.AddScoped<IPasswordEncripter, Infraestructure.Security.BCrypt>();
-
+      services.AddScoped<IPasswordEncripter, Security.Cryptography.BCrypt>();
     }
+    public static void AddToken(IServiceCollection services, IConfiguration configuration)
+    {
+        var expirationTimeMinutes = configuration.GetValue<uint>("Settings:Jwt:ExpiresMinutes");
+        var signingKey = configuration.GetValue<string>("Settings:Jwt:SigningKey");
 
+        services.AddScoped<IAcessTokenGenerator>(config => new JwtTokenGenerator(expirationTimeMinutes, signingKey!));
+    }
     private static void AddRepositories (IServiceCollection services)
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
