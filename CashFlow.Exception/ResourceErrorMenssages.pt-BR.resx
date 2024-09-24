@@ -120,7 +120,6 @@
   <data name="AMOUNT_MUST_BE_GREATER_THAN_ZERO" xml:space="preserve">
     <value>O valor deve ser maior que zero</value>
   </data>
-
   <data name="EMAIL_ALREADY_EXISTS" xml:space="preserve">
     <value>Email já cadastrado</value>
   </data>
@@ -130,14 +129,15 @@
   <data name="EMAIL_INVALID" xml:space="preserve">
     <value>Email invalido.</value>
   </data>
-
+  <data name="EMAIL_OR_PASSWORD_INVALID" xml:space="preserve">
+    <value>Email ou senha invalidas</value>
+  </data>
   <data name="EXPENSES_CANNOT_FOR_THE_FUTURE" xml:space="preserve">
     <value>As despesas não podem ser para o futuro</value>
   </data>
   <data name="EXPENSE_NOT_FOUND" xml:space="preserve">
     <value>Despesa não encontrada.</value>
   </data>
-
   <data name="INVALID_PASSWORD" xml:space="preserve">
     <value>Sua senha deve ter no mínimo 8 caracteres, contendo pelo menos uma letra maiuscula, uma letra minuscula um número e um caractere especial (por exemplo !,?.*)</value>
   </data>
