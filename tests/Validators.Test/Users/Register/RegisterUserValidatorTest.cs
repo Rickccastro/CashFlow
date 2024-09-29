@@ -1,5 +1,6 @@
 using CashFlow.Application.UseCase.User.Register;
 using CashFlow.Exception;
+using CommonTestUtilities.Requests.Register;
 using FluentAssertions;
 using Validators.Test.Expenses.Register;
 

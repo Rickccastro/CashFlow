@@ -26,6 +26,7 @@ public class DoLoginUseCase : IDoLoginUseCase
     {
 
         var user = await _repository.GetUserByEmail(request.Email);
+
         if (user is null)
         {
             throw new InvalidLoginException();     
