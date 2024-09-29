@@ -1,7 +1,7 @@
 using CashFlow.Application.UseCase.Expenses;
 using CashFlow.Communication.Enums;
 using CashFlow.Exception;
-using CommonTestUtilities.Requests;
+using CommonTestUtilities.Requests.Register;
 using FluentAssertions;
 
 namespace Validators.Test.Expenses.Register;

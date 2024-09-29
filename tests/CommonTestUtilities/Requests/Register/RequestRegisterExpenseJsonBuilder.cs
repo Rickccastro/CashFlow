@@ -3,12 +3,12 @@ using Bogus.DataSets;
 using CashFlow.Communication.Enums;
 using CashFlow.Communication.Requests;
 
-namespace CommonTestUtilities.Requests;
+namespace CommonTestUtilities.Requests.Register;
 
 public class RequestRegisterExpenseJsonBuilder
 {
     public static RequestExpenseJson Build()
-    {    
+    {
         return new Faker<RequestExpenseJson>()
             .RuleFor(r => r.Title, faker => faker.Commerce.ProductName())
             .RuleFor(r => r.Description, faker => faker.Commerce.ProductDescription())
