@@ -29,7 +29,7 @@ public class RegisterExpensesUseCase : IRegisterExpensesUseCase
     {
         Validator(request);
 
-        var entity = _mapper.Map<Expense>(request);  
+        var entity = _mapper.Map<Expense>(request);
 
         await _repository.Add(entity);
 

@@ -58,7 +58,7 @@ public class RegisterUserUseCase : IRegisterUserUseCase
         {
             result.Errors.Add(new ValidationFailure(string.Empty,ResourceErrorMenssages.EMAIL_ALREADY_EXISTS));
         }
-        if (result.IsValid)
+        if (result.IsValid == false)
         {
             var errorMessages = result.Errors.Select(f => f.ErrorMessage).ToList();
             throw new ErrorOnValidationException(errorMessages);
