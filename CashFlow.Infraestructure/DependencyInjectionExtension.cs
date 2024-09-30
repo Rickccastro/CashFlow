@@ -1,18 +1,15 @@
 using CashFlow.Domain.Repositories;
 using CashFlow.Domain.Repositories.Expenses;
-using CashFlow.Domain.Entities;
-using CashFlow.Domain.Repositories;
-using CashFlow.Domain.Repositories.Expenses;
 using CashFlow.Domain.Repositories.User;
 using CashFlow.Domain.Security.Cryptography;
-
+using CashFlow.Domain.Security.Token;
 using CashFlow.Infraestructure.DataAcess;
 using CashFlow.Infraestructure.DataAcess.Repositories;
+using CashFlow.Infraestructure.Extensions;
+using CashFlow.Infraestructure.Security.Tokens;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using CashFlow.Domain.Security.Token;
-using CashFlow.Infraestructure.Security.Tokens;
 
 namespace CashFlow.Infraestructure;
 
@@ -21,11 +18,15 @@ public static class DependencyInjectionExtension
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         AddRepositories(services);
-        AddDbContext(services, configuration);
         AddPassword(services);
-        AddDbContext(services, configuration);
-        AddToken(services, configuration);  
-    }   
+        AddToken(services, configuration);
+
+        if (configuration.IsTestEnviroment() == false)
+        {
+            AddDbContext(services, configuration);
+        }
+
+    }
     public static void AddPassword(IServiceCollection services)
     {
       services.AddScoped<IPasswordEncripter, Security.Cryptography.BCrypt>();
