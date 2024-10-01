@@ -9,6 +9,7 @@ using MigraDoc.DocumentObjectModel.Tables;
 using CashFlow.Application.UseCase.Expenses.Reports.Pdf.Colors;
 using Font = MigraDoc.DocumentObjectModel.Font;
 using CashFlow.Domain.PaymentTypeExtensions;
+using CashFlow.Domain.Services.LoggedUser;
 namespace CashFlow.Application.UseCase.Expenses.Reports.Pdf;
 
 public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCase
@@ -16,27 +17,32 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
     private const string CURRENCY_SYMBOL = "R$";
     private const int HEIGHT_ROW_EXPENSE_TABLE = 25;
     private readonly IExpensesReadOnlyRepository _repository;
+    private readonly ILoggedUser _loggedUser;
 
 
-    public GenerateExpensesReportPdfUseCase(IExpensesReadOnlyRepository repository)
+
+    public GenerateExpensesReportPdfUseCase(IExpensesReadOnlyRepository repository, ILoggedUser loggedUser)
     {
         _repository = repository;
+        _loggedUser = loggedUser;
 
         GlobalFontSettings.FontResolver = new ExpensesReportFontResolver();
     }
 
     public async Task<byte[]> Execute(DateOnly month)
     {
-        var expenses = await _repository.FilterByMonth(month);
+        var loggedUser = await _loggedUser.GetLoggedUser();
+        var expenses = await _repository.FilterByMonth(loggedUser, month);
+      
         if (expenses.Count == 0)
         {
             return [];
         }
 
-        var document = CreateDocument(month);
+        var document = CreateDocument(loggedUser.Name,month);
         var page = CreatePage(document);
 
-        CreateHenderWithProfilePhotoAndName(page);
+        CreateHenderWithProfilePhotoAndName(loggedUser.Name,page);
 
 
         var totalExpenses = expenses.Sum(expense => expense.Amount);
@@ -93,12 +99,12 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
         return RenderDocuments(document);
     }
 
-    private Document CreateDocument(DateOnly month)
+    private Document CreateDocument(string author,DateOnly month)
     {
         var document = new Document();
 
         document.Info.Title = $"{ResourceReportGeneration.EXPENSE_FOR}{month.ToString("Y")}";
-        document.Info.Author = "Ricardo Castro";
+        document.Info.Author = author;
 
         var style = document.Styles["Normal"];
 
@@ -133,10 +139,10 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
         paragraph.AddFormattedText(title, new Font { Name = FontHelper.RALEWAY_REGULAR, Size = 15 });
         paragraph.AddLineBreak();
 
-        paragraph.AddFormattedText($"{CURRENCY_SYMBOL}{totalExpenses}", new Font { Name = FontHelper.NOTOSANS_BLACK, Size = 50 }); ;
+        paragraph.AddFormattedText($"{CURRENCY_SYMBOL}{totalExpenses:f2}", new Font { Name = FontHelper.NOTOSANS_BLACK, Size = 50 }); ;
     }
 
-    private void CreateHenderWithProfilePhotoAndName(Section page)
+    private void CreateHenderWithProfilePhotoAndName(string name,Section page)
     {
         var table = page.AddTable();
         table.AddColumn();
@@ -149,7 +155,7 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
        
         row.Cells[0].AddImage(pathFile);
 
-        row.Cells[1].AddParagraph("Olá,Ricardo Castro");
+        row.Cells[1].AddParagraph($"Olá,{name}");
         row.Cells[1].Format.Font = new Font { Name = FontHelper.RALEWAY_BLACK, Size = 16 };
         row.Cells[1].VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment.Center;
     }
@@ -191,7 +197,7 @@ public class GenerateExpensesReportPdfUseCase : IGenerateExpensesReportPdfUseCas
 
     private void AddAmountForExpense(Cell cell,decimal amount)
     {
-        cell.AddParagraph($"-{CURRENCY_SYMBOL} {amount}");
+        cell.AddParagraph($"-{CURRENCY_SYMBOL} {amount:f2}");
         cell.Format.Font = new Font { Name = FontHelper.NOTOSANS_REGULAR, Size = 14, Color = ColorsHelper.BLACK };
         cell.Shading.Color = ColorsHelper.WHITE;
         cell.VerticalAlignment = VerticalAlignment.Center;

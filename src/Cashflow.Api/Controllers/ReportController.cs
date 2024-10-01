@@ -1,11 +1,15 @@
 ﻿using CashFlow.Application.UseCase.Expenses.Reports.Excel;
 using CashFlow.Application.UseCase.Expenses.Reports.Pdf;
+using CashFlow.Domain.Enum;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
 namespace Cashflow.Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Roles = Roles.ADMIN)]
+
 public class ReportController : ControllerBase
 {
 
