@@ -8,6 +8,7 @@ using AutoMapper;
 using CashFlow.Domain.Entities;
 using System.Resources;
 using CashFlow.Exception;
+using CashFlow.Domain.Services.LoggedUser;
 
 namespace CashFlow.Application.UseCase.Expenses.Update;
 
@@ -16,17 +17,21 @@ public class UpdateExpenseUseCase : IUpdateExpenseUseCase
     private readonly IMapper _mapper;
     private readonly IExpensesUpdateOnlyRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
-    public UpdateExpenseUseCase(IExpensesUpdateOnlyRepository repository, IUnitOfWork unitOfWork,IMapper mapper)
+    private readonly ILoggedUser _loggedUser;
+    public UpdateExpenseUseCase(IExpensesUpdateOnlyRepository repository, IUnitOfWork unitOfWork,IMapper mapper, ILoggedUser loggedUser)
     {
         _mapper = mapper;
         _repository = repository;
-        _unitOfWork = unitOfWork;    
+        _unitOfWork = unitOfWork; 
+        _loggedUser = loggedUser;
     }
     public async Task Execute(long id, RequestExpenseJson request)
     {
         Validate(request);
 
-        var expense = await _repository.GetById(id);
+        var loggedUser = await _loggedUser.GetLoggedUser();
+
+        var expense = await _repository.GetById(loggedUser,id);
 
         if(expense is null)
         {
