@@ -2,7 +2,7 @@ using CashFlow.Domain.Repositories;
 using CashFlow.Domain.Repositories.User;
 using Moq;
 
-namespace CommonTestUtilities.Respositories;
+namespace CommonTestUtilities.Respositories.User;
 
 public class UserWriteOnlyRepositoryBuilder
 {

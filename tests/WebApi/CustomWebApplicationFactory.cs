@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using CashFlow.Domain.Entities;
 using CashFlow.Domain.Security.Cryptography;
+using CashFlow.Domain.Security.Token;
 
 namespace WebApi;
 
@@ -13,7 +14,9 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
     private User _user;
 
-    private string _passwordSemCriptografia;   
+    private  string _passwordSemCriptografia;
+
+    private  string _token;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -32,11 +35,15 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
                 var dbContext = scope.ServiceProvider.GetRequiredService<CashFlowDbContext>();
                 var passwordEncripter = scope.ServiceProvider.GetRequiredService<IPasswordEncripter>();
-        
-                StartDataBase(dbContext, passwordEncripter);
+                var tokenGenerator = scope.ServiceProvider.GetService<IAcessTokenGenerator>();
+                StartDataBase(dbContext, passwordEncripter,tokenGenerator);
             });
     }
 
+    public string GetToken()
+    {
+        return _token;
+    }
     public string GetEmail()
     {
         return _user.Email;
@@ -50,11 +57,13 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         return _passwordSemCriptografia;
     }
    
-    private void StartDataBase(CashFlowDbContext dbContext, IPasswordEncripter passwordEncripter) 
+    private void StartDataBase(CashFlowDbContext dbContext, IPasswordEncripter passwordEncripter, IAcessTokenGenerator tokenGenerator) 
     {
         _user = UserBuilder.Build();
 
         _passwordSemCriptografia = _user.Password;
+
+        _token = tokenGenerator.Generate(_user);
 
         _user.Password = passwordEncripter.Encrypt(_user.Password);
         

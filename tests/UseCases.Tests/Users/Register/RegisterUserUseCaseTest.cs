@@ -7,6 +7,7 @@ using CommonTestUtilities.Token;
 using CashFlow.Exception.ExceptionBase;
 using CashFlow.Exception;
 using CommonTestUtilities.Requests.Register;
+using CommonTestUtilities.Respositories.User;
 
 
 namespace UseCases.Tests.Users.Register;
