@@ -59,15 +59,27 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
    
     private void StartDataBase(CashFlowDbContext dbContext, IPasswordEncripter passwordEncripter, IAcessTokenGenerator tokenGenerator) 
     {
-        _user = UserBuilder.Build();
 
-        _passwordSemCriptografia = _user.Password;
+        AddUsers(dbContext, passwordEncripter, tokenGenerator);
+        AddExpenses(dbContext, _user);
 
-        _token = tokenGenerator.Generate(_user);
-
-        _user.Password = passwordEncripter.Encrypt(_user.Password);
-        
-        dbContext.Users.Add(_user);
         dbContext.SaveChanges();
+    }
+
+    private void AddUsers(CashFlowDbContext dbContext,IPasswordEncripter passwordEncripter, IAcessTokenGenerator tokenGenerator)
+    {
+        _user = UserBuilder.Build();
+        _passwordSemCriptografia = _user.Password;
+        _token = tokenGenerator.Generate(_user);
+        _user.Password = passwordEncripter.Encrypt(_user.Password);
+        dbContext.Users.Add(_user);
+
+    }
+
+    private void AddExpenses(CashFlowDbContext dbContext,  User user)
+    {
+        var expenses = ExpenseBuilder.Build(user);
+
+        dbContext.Expenses.Add(expenses);
     }
 }
