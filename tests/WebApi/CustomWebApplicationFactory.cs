@@ -12,6 +12,8 @@ namespace WebApi;
 
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
+    private Expense _expense;
+
     private User _user;
 
     private  string _passwordSemCriptografia;
@@ -26,7 +28,6 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 var provider = services.AddEntityFrameworkInMemoryDatabase().BuildServiceProvider();
                 services.AddDbContext<CashFlowDbContext>(config =>
                 {
-
                     config.UseInMemoryDatabase("InMemoryDbforTesting");
                     config.UseInternalServiceProvider(provider);
                 });
@@ -43,6 +44,10 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     public string GetToken()
     {
         return _token;
+    }
+    public long GetExpenseById()
+    {
+        return _expense.Id;
     }
     public string GetEmail()
     {
@@ -78,8 +83,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
     private void AddExpenses(CashFlowDbContext dbContext,  User user)
     {
-        var expenses = ExpenseBuilder.Build(user);
+        _expense = ExpenseBuilder.Build(user); 
 
-        dbContext.Expenses.Add(expenses);
+        dbContext.Expenses.Add(_expense);
     }
 }
