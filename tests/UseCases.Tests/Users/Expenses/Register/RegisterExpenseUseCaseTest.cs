@@ -4,7 +4,7 @@ using CashFlow.Exception.ExceptionBase;
 using CommonTestUtilities.Entities;
 using CommonTestUtilities.Login;
 using CommonTestUtilities.Mapper;
-using CommonTestUtilities.Requests.Register;
+using CommonTestUtilities.Requests;
 using CommonTestUtilities.Respositories;
 using CommonTestUtilities.Respositories.Expenses;
 using FluentAssertions;
@@ -19,7 +19,7 @@ public class RegisterExpenseUseCaseTest
     {
         var user = UserBuilder.Build();
         var useCase = CreateUseCase(user);
-        var request = RequestRegisterExpenseJsonBuilder.Build();
+        var request = RequestExpenseJsonBuilder.Build();
 
         var result = await useCase.Execute(request);
 
@@ -33,7 +33,7 @@ public class RegisterExpenseUseCaseTest
     {
         var user = UserBuilder.Build();
         var useCase = CreateUseCase(user);
-        var request = RequestRegisterExpenseJsonBuilder.Build();
+        var request = RequestExpenseJsonBuilder.Build();
 
         request.Title = string.Empty;
 

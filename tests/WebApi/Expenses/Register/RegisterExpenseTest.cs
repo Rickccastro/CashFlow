@@ -1,5 +1,5 @@
 using CashFlow.Exception;
-using CommonTestUtilities.Requests.Register;
+using CommonTestUtilities.Requests;
 using FluentAssertions;
 using System.Globalization;
 using System.Net;
@@ -17,14 +17,14 @@ public class RegisterExpenseTest : CashFlowClassFixture
 
     public RegisterExpenseTest(CustomWebApplicationFactory webApplicationFactory) : base(webApplicationFactory) 
     {
-        _token = webApplicationFactory.GetToken();
+        _token = webApplicationFactory.User_Team_Member.GetToken();
     }
 
 
     [Fact]
     public async Task Success()
     {
-        var request = RequestRegisterExpenseJsonBuilder.Build();
+        var request = RequestExpenseJsonBuilder.Build();
 
         var result = await DoPost(requestUri: METHOD, request: request,token: _token);
 
@@ -41,7 +41,7 @@ public class RegisterExpenseTest : CashFlowClassFixture
     [ClassData (typeof(CultureInlineDataTest))]
     public async Task Error_Title_Empty(string cultureInfo)
     {
-        var request = RequestRegisterExpenseJsonBuilder.Build();
+        var request = RequestExpenseJsonBuilder.Build();
 
         request.Title = string.Empty;
 

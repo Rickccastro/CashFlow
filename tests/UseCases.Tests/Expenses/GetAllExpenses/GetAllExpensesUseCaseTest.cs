@@ -10,7 +10,6 @@ namespace UseCases.Tests.Expenses.GetAllExpenses;
 
 public class GetAllExpensesUseCaseTest
 {
-
     [Fact]
     public async Task Success()
     {

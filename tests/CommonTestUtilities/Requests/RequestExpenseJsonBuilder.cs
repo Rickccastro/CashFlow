@@ -3,9 +3,9 @@ using Bogus.DataSets;
 using CashFlow.Communication.Enums;
 using CashFlow.Communication.Requests;
 
-namespace CommonTestUtilities.Requests.Register;
+namespace CommonTestUtilities.Requests;
 
-public class RequestRegisterExpenseJsonBuilder
+public class RequestExpenseJsonBuilder
 {
     public static RequestExpenseJson Build()
     {
